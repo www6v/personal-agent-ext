@@ -1,0 +1,31 @@
+# nanoMuse Cloud 本地部署 Docker Compose
+# 使用方法: docker compose -f docker-compose.local.yml up -d
+
+services:
+  relay:
+    build:
+      context: ../../nanoMuse-main/cloud
+      dockerfile: Dockerfile
+    container_name: nanomuse-cloud
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${RELAY_BIND:-127.0.0.1}:${RELAY_PORT:-8787}:8787"
+    volumes:
+      - ./data:/srv/nanomuse-cloud/data
+    environment:
+      PUBLIC_BASE: ${PUBLIC_BASE:-http://127.0.0.1:8787}
+      CODE_SENDER: ${CODE_SENDER:-log}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8787/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - nanomuse-net
+
+networks:
+  nanomuse-net:
+    driver: bridge
