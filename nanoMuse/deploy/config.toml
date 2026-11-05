@@ -1,0 +1,74 @@
+# nanoMuse configuration - 使用 Qwen (通义千问) API
+# 配置文件用于网页版和桌面版
+
+data_dir = "~/.nanomuse"
+log_level = "INFO"
+
+# ------------------------------------------------------------------------------
+# LLM: Qwen (通义千问) - 阿里云百炼平台
+# ------------------------------------------------------------------------------
+[llm]
+provider = "openai"                 # OpenAI 兼容模式
+model = "qwen-plus"                 # 可选: qwen-turbo, qwen-plus, qwen-max
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+api_key = "sk-ff84a4311f0d484581f7decac8b54829"
+
+max_tokens = 4096
+temperature = 0.3
+timeout = 180
+max_retries = 5
+stream = true
+tool_mode = "auto"
+vision = "auto"
+
+# ------------------------------------------------------------------------------
+# Agent 配置
+# ------------------------------------------------------------------------------
+[agent]
+name = "nanoMuse"
+max_steps = 30
+language = "zh"                     # 默认中文
+max_context_messages = 80
+max_context_images = 4
+show_thinking = false
+user_profile = ""
+instructions = ""
+
+[agent.budget]
+max_total_tokens = 0
+max_seconds = 0
+max_cost_usd = 0
+input_usd_per_million = 0
+output_usd_per_million = 0
+
+# ------------------------------------------------------------------------------
+# Sentinel: 安全控制
+# ------------------------------------------------------------------------------
+[sentinel]
+mode = "ask"
+always_ask_tools = ["send_email", "shell"]
+always_allow_tools = []
+deny_tools = []
+egress_allowlist = [
+  "duckduckgo.com", "*.duckduckgo.com",
+  "wikipedia.org", "*.wikipedia.org",
+  "github.com", "*.github.com", "*.githubusercontent.com",
+  "pypi.org", "*.pypi.org",
+]
+taint_tracking = true
+
+# ------------------------------------------------------------------------------
+# Memory: 记忆系统
+# ------------------------------------------------------------------------------
+[memory]
+enabled = true
+max_inject = 20
+recall_mode = "auto"
+
+# ------------------------------------------------------------------------------
+# Server: 网页服务配置
+# ------------------------------------------------------------------------------
+[server]
+host = "0.0.0.0"
+port = 8787
+auth = true
