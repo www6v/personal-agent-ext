@@ -1,0 +1,41 @@
+# nanoMuse Cloud 本地/局域网 Docker Compose 部署
+# 基于 cloud/docker-compose.yml + cloud/docker-compose.local.yml
+# 适配无域名的 IP 访问模式
+
+services:
+  relay:
+    build:
+      context: ${NANOMUSE_CLOUD_DIR:-/home/wei/personal-agent/nanoMuse-main}/cloud
+      dockerfile: Dockerfile
+    image: nanomuse-cloud:latest
+    container_name: nanomuse-cloud
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: true
+    ports:
+      - "${RELAY_BIND:-0.0.0.0}:${RELAY_PORT:-8789}:8787"
+    volumes:
+      - cloud-data:/srv/nanomuse-cloud/data
+    environment:
+      PUBLIC_BASE: ${PUBLIC_BASE:-http://124.221.28.203:8789}
+      CODE_SENDER: ${CODE_SENDER:-log}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8787/healthz', timeout=3).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  cloud-data:
+    driver: local

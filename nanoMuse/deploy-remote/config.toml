@@ -1,20 +1,13 @@
 # nanoMuse 配置 (Qwen API)
-# 部署时 API_KEY 会被替换
-
-data_dir = "~/.nanomuse"
+data_dir = "/data"
 log_level = "INFO"
 
 [llm]
 provider = "openai"
 model = "qwen-plus"
 base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-api_key = "QWEN_API_KEY_PLACEHOLDER"
+api_key = "sk-ff84a4311f0d484581f7decac8b54829"
 
 [agent]
 language = "zh"
-sentinel = "ask"
 max_steps = 30
-
-[server]
-host = "0.0.0.0"
-port = 8788
